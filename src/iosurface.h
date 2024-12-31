@@ -38,12 +38,14 @@ int iosurface_krw(io_connect_t client, uint64_t *puafPages, int nPages, uint64_t
 /*
 * @brief Read a 32-bit value at an arbitrary kernel address.
 * @param[in] va
+* @returns Value at the address
 */
 uint32_t iosurface_kread32(uint64_t va);
 
 /*
 * @brief Read a 64-bit value at an arbitrary kernel address.
 * @param[in] va
+* @returns Value at the address
 */
 uint64_t iosurface_kread64(uint64_t va);
 
@@ -51,7 +53,7 @@ uint64_t iosurface_kread64(uint64_t va);
 * @brief Write a 32-bit value at an arbitrary kernel address.
 * @param[in] va
 * @param[in] value
-* @returns error code.
+* @returns Error code.
 */
 int iosurface_kwrite32(uint64_t va, uint32_t value);
 
@@ -59,7 +61,7 @@ int iosurface_kwrite32(uint64_t va, uint32_t value);
 * @brief Write a 64-bit value at an arbitrary kernel address.
 * @param[in] va
 * @param[in] value
-* @returns error code.
+* @returns Error code.
 */
 int iosurface_kwrite64(uint64_t va, uint64_t value);
 
@@ -69,7 +71,7 @@ int iosurface_kwrite64(uint64_t va, uint64_t value);
 * @param[in] va
 * @param[in] buffer
 * @param[in] size
-* @returns error code.
+* @returns Error code.
 */
 int iosurface_kreadbuf(uint64_t addr, void *buffer, size_t size);
 
@@ -78,7 +80,7 @@ int iosurface_kreadbuf(uint64_t addr, void *buffer, size_t size);
 * @param[in] va
 * @param[in] buffer
 * @param[in] size
-* @returns error code.
+* @returns Error code.
 */
 int iosurface_kwritebuf(uint64_t addr, void *buffer, size_t size);
 

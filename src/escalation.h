@@ -21,7 +21,7 @@ void proc_set_mac_label(uint64_t proc, int slot, uint64_t value);
 * @brief Retrieve a value from the proc's MAC label array
 * @param[in] proc
 * @param[in] slot
-* @returns value in the slot.
+* @returns Value in the slot.
 */
 uint64_t proc_get_mac_label(uint64_t proc, int slot);
 

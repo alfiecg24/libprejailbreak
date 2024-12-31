@@ -44,31 +44,139 @@ struct GlobalInfo {
 };
 extern struct GlobalInfo gGlobalInfo;
 
+/*
+* @brief Retrieve the address of the process's proc structure.
+* @returns Kernel address of the proc structure, or zero if not set yet.
+*/
+uint64_t proc_self(void);
+
+/*
+* @brief Retrieve the address of the process's task structure.
+* @returns Kernel address of the task structure, or zero if not set yet.
+*/
+uint64_t task_self(void);
+
+/*
+* @brief Retrieve the address of the process's ucred structure.
+* @returns Kernel address of the ucred structure, or zero if not set yet.
+*/
+uint64_t ucred_self(void);
+
+/*
+* @brief Retrieve the address of the process's vm_map structure.
+* @returns Kernel address of the vm_map structure, or zero if not set yet.
+*/
+uint64_t vm_map_self(void);
+
+/*
+* @brief Retrieve the address of the process's pmap structure.
+* @returns Kernel address of the pmap structure, or zero if not set yet.
+*/
+uint64_t pmap_self(void);
+
+/*
+* @brief Read an 8-bit value at a kernel memory address.
+* @param[in] va
+* @returns Value at that address, zero if primitive not setup.
+*/
+uint8_t kread8(uint64_t va);
+
+/*
+* @brief Read a 16-bit value at a kernel memory address.
+* @param[in] va
+* @returns Value at that address, zero if primitive not setup.
+*/
+uint16_t kread16(uint64_t va);
+
+/*
+* @brief Read a 32-bit value at a kernel memory address.
+* @param[in] va
+* @returns Value at that address, zero if primitive not setup.
+*/
+uint32_t kread32(uint64_t va);
+
+/*
+* @brief Read a 64-bit value at a kernel memory address.
+* @param[in] va
+* @returns Value at that address, zero if primitive not setup.
+*/
+uint64_t kread64(uint64_t va);
+
+/*
+* @brief Read a 64-bit pointer at a kernel memory address and remove the PAC if present.
+* @param[in] va
+* @returns Value at that address, zero if primitive not setup.
+*/
+uint64_t kread_ptr(uint64_t va);
+
+/*
+* @brief Write an 8-bit value to a kernel memory address.
+* @param[in] va
+* @param[in] value
+* @returns Error code
+*/
+int kwrite8(uint64_t va, uint8_t val);
+
+/*
+* @brief Write a 16-bit value to a kernel memory address.
+* @param[in] va
+* @param[in] value
+* @returns Error code
+*/
+int kwrite16(uint64_t va, uint16_t val);
+
+/*
+* @brief Write a 32-bit value to a kernel memory address.
+* @param[in] va
+* @param[in] value
+* @returns Error code
+*/
+int kwrite32(uint64_t va, uint32_t val);
+
+/*
+* @brief Write a 64-bit value to a kernel memory address.
+* @param[in] va
+* @param[in] value
+* @returns Error code
+*/
+int kwrite64(uint64_t va, uint64_t val);
+
+/*
+* @brief Read a buffer of the specified size from a kernel memory address.
+* @param[in] va
+* @param[in] buffer
+* @param[in] size
+* @returns Error code
+*/
+int kreadbuf(uint64_t va, void *buffer, size_t size);
+
+/*
+* @brief Copy a buffer of the specified size to a kernel memory address.
+* @param[in] va
+* @param[in] buffer
+* @param[in] size
+* @returns Error code
+*/
+int kwritebuf(uint64_t va, void *buffer, size_t size);
+
+/*
+* @brief Allocate a region of kernel memory.
+* @param[in] size
+* @returns Address of the allocation
+*/
+uint64_t kalloc(size_t size);
+
+/*
+* @brief Free a region of kernel memory.
+* @param[in] va
+* @param[in] size
+* @returns Address of the allocation
+*/
+void kfree(uint64_t va, size_t size);
+
 #define pinfo(x) (gGlobalInfo.processInfo.x)
 #define kinfo(x) (gGlobalInfo.kernelInfo.x)
 #define kslide(x) (x + kinfo(slide))
-
-uint64_t proc_self(void);
-uint64_t task_self(void);
-uint64_t ucred_self(void);
-uint64_t vm_map_self(void);
-uint64_t pmap_self(void);
-
 #define koffsetof(type, member) (offsets_find(#type "." #member, gOffsets.type.member))
-
-uint8_t kread8(uint64_t va);
-uint16_t kread16(uint64_t va);
-uint32_t kread32(uint64_t va);
-uint64_t kread64(uint64_t va);
-uint64_t kread_ptr(uint64_t va);
-int kwrite8(uint64_t va, uint8_t val);
-int kwrite16(uint64_t va, uint16_t val);
-int kwrite32(uint64_t va, uint32_t val);
-int kwrite64(uint64_t va, uint64_t val);
-int kreadbuf(uint64_t va, void *buffer, size_t size);
-int kwritebuf(uint64_t va, void *buffer, size_t size);
-
-uint64_t kalloc(size_t size);
-void kfree(uint64_t va, size_t size);
 
 #endif // LIBPREJAILBREAK_H

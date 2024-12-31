@@ -88,7 +88,7 @@ extern struct KernelOffsets gOffsets;
 * @brief Check an offset to warn the user if they haven't initialised offsets.
 * @param[in] name
 * @param[in] value
-* @returns offset or -1 (if there is no offset available).
+* @returns Offset, or -1 (if there is no offset available).
 */
 uint64_t offsets_find(const char *name, uint64_t value);
 
